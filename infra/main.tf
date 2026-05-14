@@ -15,7 +15,7 @@ resource "azurerm_service_plan" "serviceplan_web" {
     sku_name = "F1"
 }
 
-resource "azurerm_linux_web_app" "paginaprueba" {
+resource "azurerm_linux_web_app" "paginapruebadevsecops" {
     name = "paginaprueba"
     resource_group_name = azurerm_resource_group.devsecopsapp.name
     location = azurerm_resource_group.devsecopsapp.location
