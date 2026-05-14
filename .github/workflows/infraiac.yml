@@ -31,6 +31,6 @@ jobs:
         run: terraform plan -var-file terraform.tfvars -out-plan.out
         working-directory: ./infra
 
-      -name: terraform apply
-      run: terraform apply -var-file terraform.tfvars -aout-approve
-      working-directory: ./infra
+      - name: terraform apply
+        run: terraform apply -var-file terraform.tfvars -aout-approve
+        working-directory: ./infra
