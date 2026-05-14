@@ -1,0 +1,13 @@
+name : Despliegue infra IaC
+on:
+  push:
+    branches: ["main"]
+jobs:
+  deploy:
+    name: Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar el repositorio
+        uses: actions/checkout@v3
+      - name: Terraform version
+        run: terraform version
