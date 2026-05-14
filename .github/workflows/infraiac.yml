@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validar el repositorio
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: hashicorp/setup-terraform@v3
+        
       - name: Terraform version
         run: terraform version
