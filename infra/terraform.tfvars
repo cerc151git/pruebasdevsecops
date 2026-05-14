@@ -1,3 +1,3 @@
 rg_name = "rg-webapp"
-location = "East US"
+location = "Central US"
 imagencontenedor = "devsecopspruebas/webserver:latest"
