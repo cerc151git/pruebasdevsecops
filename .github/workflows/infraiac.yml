@@ -13,11 +13,6 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUSCRIPTION_ID}}
       ARM_TENANT_ID: ${{secrets.AZURE_AD_TENANT_ID}}
     steps:
-      - name: Debug directorio
-        run: |
-          pwd
-          ls -la
-          find . -type f
       - name: Validar el repositorio
         uses: actions/checkout@v4
 
