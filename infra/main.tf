@@ -12,7 +12,7 @@ resource "azurerm_service_plan" "serviceplan_web" {
     resource_group_name = azurerm_resource_group.devsecopsapp.name
     location = azurerm_resource_group.devsecopsapp.location
     os_type = "Linux"
-    sku_name = "D1"
+    sku_name = "B1"
 }
 
 resource "azurerm_linux_web_app" "paginaprueba" {
