@@ -13,6 +13,11 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUSCRIPTION_ID}}
       ARM_TENANT_ID: ${{secrets.AZURE_AD_TENANT_ID}}
     steps:
+      - name: Debnug directorio
+        run: |
+          pwd
+          ls -la
+          find . -type f
       - name: Validar el repositorio
         uses: actions/checkout@v4
 
@@ -21,16 +26,16 @@ jobs:
         
       - name: Terraform init
         run: terraform init -backend-config="sas_token=${{secrets.SAS_TOKEN}}"
-        working-directory: ./infra
+        working-directory: infra
 
       - name: Validacion terraform
         run: terraform validate
-        working-directory: ./infra
+        working-directory: infra
 
       - name: terraform plan
         run: terraform plan -var-file="terraform.tfvars"
-        working-directory: ./infra
+        working-directory: infra
 
       - name: terraform apply
         run: terraform apply -var-file="terraform.tfvars" -auto-approve
-        working-directory: ./infra
+        working-directory: infra
