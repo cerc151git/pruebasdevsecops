@@ -37,9 +37,9 @@ jobs:
         working-directory: infra
 
       - name: terraform plan
-        run: terraform plan -var-file="${ENVIRONMENT}.tfvars"
+        run: terraform plan -var-file="environments/${ENVIRONMENT}.tfvars"
         working-directory: infra
 
       - name: terraform apply
-        run: terraform apply -var-file="${ENVIRONMENT}.tfvars" -auto-approve
+        run: terraform apply -var-file="environments/${ENVIRONMENT}.tfvars" -auto-approve
         working-directory: infra
