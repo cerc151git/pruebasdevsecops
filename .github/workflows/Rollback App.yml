@@ -1,0 +1,48 @@
+name: Rollback App
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Ambiente
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
+
+      image_tag:
+        description: Tag a restaurar
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy DEV
+        if: ${{ inputs.environment == 'dev' }}
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'paginapruebadevsecops-dev'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_DEV }}
+          images: devsecopspruebas/webserver:${{ inputs.image_tag }}
+
+      - name: Deploy QA
+        if: ${{ inputs.environment == 'qa' }}
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'paginapruebadevsecops-qa'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_QA }}
+          images: devsecopspruebas/webserver:${{ inputs.image_tag }}
+
+      - name: Deploy PROD
+        if: ${{ inputs.environment == 'prod' }}
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'paginapruebadevsecops-prod'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_PROD }}
+          images: devsecopspruebas/webserver:${{ inputs.image_tag }}
