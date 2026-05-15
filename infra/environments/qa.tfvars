@@ -1,3 +1,6 @@
+rg_name = "rg-webapp"
+location = "Central US"
+imagencontenedor = "devsecopspruebas/webserver:latest"
 environment = "qa"
 app_name = "web-qa"
 sku = "B1"
