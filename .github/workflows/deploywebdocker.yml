@@ -51,21 +51,31 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           docker push devsecopspruebas/webserver:${ENVIRONMENT}
-      - name: Seleccionar publish profile
-        run: |
-          if [ "$ENVIRONMENT" = "dev" ]; then
-            echo "WEBAPP_PROFILE<<EOF" >> $GITHUB_ENV
-            echo '${{ secrets.AZURE_WEBAPP_PROFILE_DEV }}' >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
-          elif [ "$ENVIRONMENT" = "qa" ]; then
-            echo "WEBAPP_PROFILE<<EOF" >> $GITHUB_ENV
-            echo '${{ secrets.AZURE_WEBAPP_PROFILE_QA }}' >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
-          else
-            echo "WEBAPP_PROFILE<<EOF" >> $GITHUB_ENV
-            echo '${{ secrets.AZURE_WEBAPP_PROFILE_PROD }}' >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
-          fi
+          
+      - name: Deploy DEV
+        if: env.ENVIRONMENT == 'dev' && github.event_name != 'pull_request'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'paginapruebadevsecops-${ENVIRONMENT}'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_DEV }}
+          images: 'devsecopspruebas/webserver:${ENVIRONMENT}'
+          
+      - name: Deploy QA
+        if: env.ENVIRONMENT == 'qa' && github.event_name != 'pull_request'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'paginapruebadevsecops-${ENVIRONMENT}'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_QA }}
+          images: 'devsecopspruebas/webserver:${ENVIRONMENT}'
+          
+      - name: Deploy PROD
+        if: env.ENVIRONMENT == 'prod' && github.event_name != 'pull_request'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'paginapruebadevsecops-${ENVIRONMENT}'
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_PROD }}
+          images: 'devsecopspruebas/webserver:${ENVIRONMENT}'
+          
       - name: Deploy App Service
         if: github.event_name != 'pull_request'
         uses: azure/webapps-deploy@v2
