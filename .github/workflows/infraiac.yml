@@ -1,7 +1,7 @@
 name : Despliegue infra IaC
 on:
   workflow_dispatch:
-    inputs:
+     inputs:
       environment:
         description: Ambiente
         required: true
@@ -10,6 +10,12 @@ on:
           - dev
           - qa
           - prod
+  pull_request: 
+    branches:
+      - main
+  push:
+    branches:
+      - main
 jobs:
   deploy:
     name: Terraform settings
@@ -45,5 +51,6 @@ jobs:
           tfsec . 
 
       - name: terraform apply
+        if: github.event_name == 'push'
         run: terraform apply -var-file="environments/${ENVIRONMENT}.tfvars" -auto-approve tfplan
         working-directory: infra
