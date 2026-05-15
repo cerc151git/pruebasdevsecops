@@ -1,0 +1,30 @@
+name: Pipeline Completo
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Ambiente
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
+
+jobs:
+
+  deploy-infra:
+    name: Desplegar Infraestructura
+    uses: ./.github/workflows/infraiac.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
+
+  deploy-app:
+    name: Desplegar Aplicacion
+    needs: deploy-infra
+    uses: ./.github/workflows/deploywebdocker.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
