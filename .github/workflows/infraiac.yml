@@ -1,12 +1,22 @@
 name : Despliegue infra IaC
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: Ambiente
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - prod
 
 jobs:
   deploy:
     name: Terraform settings
     runs-on: ubuntu-latest
     env:
+      ENVIRONMENT: ${{inputs.environment}}
       ARM_CLIENT_ID: ${{secrets.AZURE_AD_CLIENT_ID}}
       ARM_CLIENT_SECRET: ${{secrets.AZURE_AD_CLIENT_SECRET}}
       ARM_SUBSCRIPTION_ID: ${{secrets.AZURE_SUSCRIPTION_ID}}
@@ -27,9 +37,9 @@ jobs:
         working-directory: infra
 
       - name: terraform plan
-        run: terraform plan -var-file="terraform.tfvars"
+        run: terraform plan -var-file="${ENVIRONMENT}.tfvars"
         working-directory: infra
 
       - name: terraform apply
-        run: terraform apply -var-file="terraform.tfvars" -auto-approve
+        run: terraform apply -var-file="${ENVIRONMENT}.tfvars" -auto-approve
         working-directory: infra
