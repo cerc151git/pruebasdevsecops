@@ -1,4 +1,4 @@
-rg_name = "rg-webapp"
+rg_name = "rg-webapp-prod"
 location = "Central US"
 imagencontenedor = "devsecopspruebas/webserver:latest"
 environment = "prod"
