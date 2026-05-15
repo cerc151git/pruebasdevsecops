@@ -40,6 +40,11 @@ jobs:
         run: terraform plan -var-file="environments/${ENVIRONMENT}.tfvars" -out=tfplan
         working-directory: infra
 
+      - name: Security Scan
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+          tfsec . 
+
       - name: terraform apply
         run: terraform apply -var-file="environments/${ENVIRONMENT}.tfvars" -auto-approve tfplan
         working-directory: infra
