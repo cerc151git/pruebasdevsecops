@@ -10,7 +10,7 @@ variable "imagencontenedor" {
 variable "environment" {
   type = string
 }
-variable "app-name" {
+variable "app_name" {
   type = string
 }
 variable "sku" {
