@@ -24,7 +24,7 @@ resource "azurerm_linux_web_app" "paginaprueba" {
       always_on = false
       application_stack {
         docker_image_name = var.imagencontenedor
-        docker_registry_url = "https://docker.io"
+        docker_registry_url = "https://index.docker.io"
       }
     }
 }
