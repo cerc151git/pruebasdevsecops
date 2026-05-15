@@ -60,23 +60,23 @@ jobs:
         if: env.ENVIRONMENT == 'dev' && github.event_name != 'pull_request'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'paginapruebadevsecops-dev'
+          app-name: 'paginapruebadevsecops-${{ env.ENVIRONMENT }}'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_DEV }}
-          images: 'devsecopspruebas/webserver:dev'
+          images: 'devsecopspruebas/webserver:${{ env.ENVIRONMENT }}'
           
       - name: Deploy QA
         if: env.ENVIRONMENT == 'qa' && github.event_name != 'pull_request'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'paginapruebadevsecops-qa'
+          app-name: 'paginapruebadevsecops-${{ env.ENVIRONMENT }}'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_QA }}
-          images: 'devsecopspruebas/webserver:${ENVIRONMENT}'
+          images: 'devsecopspruebas/webserver:${{ env.ENVIRONMENT }}'
           
       - name: Deploy PROD
         if: env.ENVIRONMENT == 'prod' && github.event_name != 'pull_request'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'paginapruebadevsecops-${ENVIRONMENT}'
+          app-name: 'paginapruebadevsecops-${ env.ENVIRONMENT }'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_PROD }}
-          images: 'devsecopspruebas/webserver:${ENVIRONMENT}'
+          images: 'devsecopspruebas/webserver:${{ env.ENVIRONMENT }}'
           
