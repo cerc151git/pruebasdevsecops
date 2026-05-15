@@ -7,7 +7,7 @@ variable "location" {
 variable "imagencontenedor" {
   type = string
 }
-variable "environment"
+variable "environment" {
   type = string
 }
 variable "app-name" {
