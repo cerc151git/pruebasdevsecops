@@ -3,5 +3,5 @@ location = "Central US"
 imagencontenedor = "devsecopspruebas/webserver:latest"
 environment = "dev"
 app_name = "web-dev"
-sku = "F1"
+sku = "B1"
 
