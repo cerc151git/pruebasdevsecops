@@ -10,6 +10,11 @@ on:
           - dev
           - qa
           - prod
+  workflow_call: 
+    inputs:
+      environment:
+        required: true
+        type: string
   pull_request: 
     branches:
       - main
