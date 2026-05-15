@@ -1,26 +1,27 @@
 name: Docker image web
 on:
   workflow_dispatch:
-  jobs:
-    deploy:
-      name: Docker build
-      runs-on: ubuntu-latest
-      steps:
-        - name: checkout
-          uses: actions/checkout@v3
-        - name: login dockerhub
-          uses: docker/login-actions@v2
-          with:
-        - name: Build website
-          run: |
-            docker build --platform linux --tag  devsecopspruebas/webserver:latest -f src/Dockerfile .
-            working-directory: src
-        - name: Publicar la imagen
-          run: | 
-            docker push devsecopspruebas/webserver:latest
-        - name: App service auth
-          uses: azure/webapps-deploy@v2
-          with:
-            app-name: 'paginapruebadevsecops'
-            publish-profile: ${{secrets.AZURE_WEBAPP_PROFILE}} 
-            images: 'devsecopspruebas/webserver:latest' 
+jobs:
+  deploy:
+    name: Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: login dockerhub
+        uses: docker/login-actions@v2
+        with:
+      - name: Build website
+        run: |
+          docker build --platform linux --tag  devsecopspruebas/webserver:latest -f src/Dockerfile .
+          working-directory: src
+      - name: Publicar la imagen
+        run: | 
+          docker push devsecopspruebas/webserver:latest
+          working-directory: src
+      - name: App service auth
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'paginapruebadevsecops'
+          publish-profile: ${{secrets.AZURE_WEBAPP_PROFILE}} 
+          images: 'devsecopspruebas/webserver:latest' 
