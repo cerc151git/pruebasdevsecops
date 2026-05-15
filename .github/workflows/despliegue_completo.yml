@@ -28,3 +28,24 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
+
+  monitoring:
+      name: Monitoreo Aplicacion
+      needs: deploy-app
+      runs-on: ubuntu-latest
+      env:
+        ENVIRONMENT: ${{ inputs.environment }}
+      steps:
+        - name: Definir URL
+          run: |
+            echo "APP_URL=https://paginapruebadevsecops-${ENVIRONMENT}.azurewebsites.net" >> $GITHUB_ENV
+        - name: Esperar inicio app
+          run: sleep 30
+        - name: Validar disponibilidad
+          run: |
+            STATUS=$(curl -o /dev/null -s -w "%{http_code}" $APP_URL)
+            echo "HTTP STATUS: $STATUS"
+            if [ "$STATUS" != "200" ]; then
+              echo "Aplicacion no disponible"
+              exit 1
+            fi
