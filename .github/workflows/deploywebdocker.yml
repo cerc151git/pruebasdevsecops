@@ -11,11 +11,10 @@ on:
         - name: login dockerhub
           uses: docker/login-actions@v2
           with:
-            username: ${{secrets.DOCKERHUB_USERNAME}}
-            password: ${{secrets.DOCKERHUB_TOKEN}}
         - name: Build website
           run: |
-            docker build --platform linux --tag  devsecopspruebas/webserver:latest -f src/Dockerfile .branch_protection_rule: 
+            docker build --platform linux --tag  devsecopspruebas/webserver:latest -f src/Dockerfile .
+          
         - name: Publicar la imagen
           run: | 
             docker push devsecopspruebas/webserver:latest
