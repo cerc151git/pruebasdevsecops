@@ -1,10 +1,6 @@
 name: Docker image web
 on:
-  push:
-      branches: ["main"]
-  paths:
-    - 'src/**'
-
+  workflow_dispatch:
   jobs:
     deploy:
       name: Docker build
