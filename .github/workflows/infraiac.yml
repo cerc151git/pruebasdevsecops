@@ -10,7 +10,6 @@ on:
           - dev
           - qa
           - prod
-
 jobs:
   deploy:
     name: Terraform settings
