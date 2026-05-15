@@ -14,7 +14,7 @@ on:
         - name: Build website
           run: |
             docker build --platform linux --tag  devsecopspruebas/webserver:latest -f src/Dockerfile .
-          
+            working-directory: src
         - name: Publicar la imagen
           run: | 
             docker push devsecopspruebas/webserver:latest
