@@ -62,7 +62,7 @@ jobs:
         with:
           app-name: 'paginapruebadevsecops-dev'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_DEV }}
-          images: 'devsecopspruebas/webserver:${ENVIRONMENT}'
+          images: 'devsecopspruebas/webserver:dev'
           
       - name: Deploy QA
         if: env.ENVIRONMENT == 'qa' && github.event_name != 'pull_request'
