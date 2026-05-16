@@ -99,12 +99,12 @@ jobs:
           app-name: 'paginapruebadevsecops-${{env.ENVIRONMENT}}'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_PROD }}
           images: 'devsecopspruebas/webserver:${{ env.IMAGE_TAG }}'
+      
       - name: Actualizar version estable
         if: ${{ success() }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GV_TOKEN: ${{ secrets.GV_PAT }}
         run: |
-      
           if [ "$ENVIRONMENT" = "dev" ]; then
             VAR_NAME="DEV_VERSION"
           elif [ "$ENVIRONMENT" = "qa" ]; then
@@ -112,11 +112,10 @@ jobs:
           else
             VAR_NAME="PROD_VERSION"
           fi
-      
           curl -L \
             -X PATCH \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Authorization: Bearer $GV_TOKEN" \
             https://api.github.com/repos/${{ github.repository }}/actions/variables/$VAR_NAME \
             -d "{\"name\":\"$VAR_NAME\",\"value\":\"${IMAGE_TAG}\"}"
           
