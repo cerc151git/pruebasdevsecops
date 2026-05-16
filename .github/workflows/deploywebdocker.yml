@@ -34,6 +34,18 @@ jobs:
       APP_NAME: paginapruebadevsecops-${{ inputs.environment }}
       IMAGE_TAG: ${{ inputs.environment }}-v${{github.run_number}}-${{github.sha}}
     steps:
+      - name: Obtener version anterior
+        id: previous-version
+        run: |
+          FILE="versions/${ENVIRONMENT}.txt"
+          if [ -s "$FILE" ]; then
+            PREVIOUS_VERSION=$(cat $FILE)
+            echo "PREVIOUS_VERSION=$PREVIOUS_VERSION" >> $GITHUB_ENV
+            echo "HAS_PREVIOUS=true" >> $GITHUB_ENV
+          else
+            echo "HAS_PREVIOUS=false" >> $GITHUB_ENV
+            echo "Primer despliegue"
+          fi
       - name: checkout
         uses: actions/checkout@v4
       - name: Login DockerHub
