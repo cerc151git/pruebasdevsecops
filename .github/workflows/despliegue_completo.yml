@@ -67,7 +67,7 @@ jobs:
     needs: monitoring
     if: ${{ needs.monitoring.result == 'failure'
             && needs.monitoring.outputs.previous_version != '' }}
-    uses: ./.github/workflows/rollback.yml
+    uses: ./.github/workflows/Rollback App.yml
     with:
       environment: ${{ inputs.environment }}
       image_tag: ${{ needs.monitoring.outputs.previous_version }}
