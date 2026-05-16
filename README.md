@@ -1,37 +1,36 @@
 # pruebasdevsecops
-[![Preguntas](https://devin.ai/assets/askdeepwiki.png)]((https://github.com/cerc151git/pruebasdevsecops))
 
-This repository contains a full DevSecOps pipeline for deploying a containerized static web application to Azure. The project uses Terraform for Infrastructure as Code (IaC), Docker to containerize the application, and GitHub Actions for CI/CD automation, including security scanning, deployment, monitoring, and automated rollbacks.
+Este repositorio contiene un pipeline completo de DevSecOps para desplegar una web estatica contenerisada en Azure. Este proyecto usa terraform para infraestructura como codigo, docker para contenerizar la aplicacion, y GitHub Actions para la automatizacion de CI/CD, incluyendo escaneo de seguridad, despliegue, monitoreo y rollback automatico.
 
-## Project Structure
+## Estructura del proyect
 
-The repository is organized into the following main directories:
+El proyecto esta organizado dentro del siguiente directorio principal:
 
--   `.github/workflows/`: Contains all GitHub Actions workflow definitions for CI/CD.
--   `infra/`: Holds the Terraform code for provisioning Azure infrastructure.
--   `src/`: Contains the source code for the static website and its Dockerfile.
+-   `.github/workflows/`: contienen todas los workflows de GitHub ActionsContains para CI/CD.
+-   `infra/`: Contiene el codigo de terraform para provisionar la infraestructura en Azure.
+-   `src/`: Contiene el codigo fuente de la pagina Web estatica junto con el dockerfile el cual esta basado en una imagen de nginx
 
 ```
 /
 ├── .github/workflows/      # GitHub Actions CI/CD pipelines
-│   ├── despliegue_completo.yml # Main pipeline for full deployment
-│   ├── deploywebdocker.yml    # Builds, scans, and deploys the Docker image
-│   ├── infraiac.yml           # Deploys infrastructure using Terraform
-│   ├── rollback.yml           # Handles application rollback
-│   └── destroy.yml            # Destroys Terraform-managed infrastructure
+│   ├── despliegue_completo.yml # Pipeline principal para el despliegue total
+│   ├── deploywebdocker.yml    # Builds, escanea, y despliega la imagen Docker
+│   ├── infraiac.yml           # Despliega la infraestructura usando terraform
+│   ├── rollback.yml           # Maneja el rollback de la aplicacion
+│   └── destroy.yml            # Destruye la infraestructura desplegada
 │
 ├── infra/                    # Terraform Infrastructure as Code
-│   ├── main.tf               # Main Terraform configuration for Azure resources
-│   ├── variables.tf          # Terraform variable declarations
-│   ├── backend/              # Terraform backend state configurations (dev, qa, prod)
-│   └── environments/         # Environment-specific variable files (dev, qa, prod)
+│   ├── main.tf               # configuracion principal de terraforma para el despliegue en Azure
+│   ├── variables.tf          # Variables de terraform
+│   ├── backend/              # Definicion del estado de despliegue de terraform por ambiente (dev, qa, prod). El estado es guardado en un storage Account que debe ser desplegado previamente
+│   └── environments/         # variables por ambiente (dev, qa, prod)
 │
-└── src/                      # Application source code
-    ├── Dockerfile            # Dockerfile to build the NGINX web server image
-    └── sitio_web/            # Static e-commerce website files (HTML, CSS, JS)
+└── src/                      # Codigo fuente de la web estatica
+    ├── Dockerfile            # Dockerfile para construir el contenedor basado en nginx
+    └── sitio_web/            # Plantilla de un sitio web descargado de internet
 ```
 
-## Infrastructure (Terraform)
+## Infraestructura (Terraform)
 
 The infrastructure is managed using Terraform and is defined in the `infra/` directory.
 
