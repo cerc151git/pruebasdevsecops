@@ -1,6 +1,6 @@
-name: Rollback App
-
+name: Rollback Aplicacion
 on:
+  # Modo manual
   workflow_dispatch:
     inputs:
       environment:
@@ -11,38 +11,65 @@ on:
           - dev
           - qa
           - prod
-
       image_tag:
-        description: Tag a restaurar
+        description: Version a restaurar
         required: true
         type: string
-
+  # Modo automatico
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
 jobs:
   rollback:
     runs-on: ubuntu-latest
-
+    env:
+      ENVIRONMENT: ${{ inputs.environment }}
+      IMAGE_TAG: ${{ inputs.image_tag }}
     steps:
+      - name: Mostrar rollback
+        run: |
+          echo "Ambiente: $ENVIRONMENT"
+          echo "Version: $IMAGE_TAG"
 
-      - name: Deploy DEV
-        if: ${{ inputs.environment == 'dev' }}
+      - name: Rollback DEV
+        if: ${{ env.ENVIRONMENT == 'dev' }}
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'paginapruebadevsecops-dev'
+          app-name: paginapruebadevsecops-dev
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_DEV }}
-          images: devsecopspruebas/webserver:${{ inputs.image_tag }}
+          images: devsecopspruebas/webserver:${{ env.IMAGE_TAG }}
 
-      - name: Deploy QA
-        if: ${{ inputs.environment == 'qa' }}
+      - name: Rollback QA
+        if: ${{ env.ENVIRONMENT == 'qa' }}
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'paginapruebadevsecops-qa'
+          app-name: paginapruebadevsecops-qa
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_QA }}
-          images: devsecopspruebas/webserver:${{ inputs.image_tag }}
+          images: devsecopspruebas/webserver:${{ env.IMAGE_TAG }}
 
-      - name: Deploy PROD
-        if: ${{ inputs.environment == 'prod' }}
+      - name: Rollback PROD
+        if: ${{ env.ENVIRONMENT == 'prod' }}
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'paginapruebadevsecops-prod'
+          app-name: paginapruebadevsecops-prod
           publish-profile: ${{ secrets.AZURE_WEBAPP_PROFILE_PROD }}
-          images: devsecopspruebas/webserver:${{ inputs.image_tag }}
+          images: devsecopspruebas/webserver:${{ env.IMAGE_TAG }}
+
+      - name: Esperar inicio
+        run: sleep 30
+
+      - name: Validar rollback
+        run: |
+          URL="https://paginapruebadevsecops-${ENVIRONMENT}.azurewebsites.net"
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" $URL)
+          echo "STATUS: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "Rollback falló"
+            exit 1
+          fi
+          echo "Rollback exitoso"
