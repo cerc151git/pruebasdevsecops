@@ -1,5 +1,4 @@
 name: Pipeline Completo
-
 on:
   workflow_dispatch:
     inputs:
@@ -11,12 +10,10 @@ on:
           - dev
           - qa
           - prod
-
 jobs:
-
   deploy-infra:
     name: Desplegar Infraestructura
-    uses: ./.github/workflows/infraiac.yml
+    uses: ./.github/workflows/terraform.yml
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
@@ -24,28 +21,54 @@ jobs:
   deploy-app:
     name: Desplegar Aplicacion
     needs: deploy-infra
-    uses: ./.github/workflows/deploywebdocker.yml
+    uses: ./.github/workflows/app.yml
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
 
   monitoring:
-      name: Monitoreo Aplicacion
-      needs: deploy-app
-      runs-on: ubuntu-latest
-      env:
-        ENVIRONMENT: ${{ inputs.environment }}
-      steps:
-        - name: Definir URL
-          run: |
-            echo "APP_URL=https://paginapruebadevsecops-${ENVIRONMENT}.azurewebsites.net" >> $GITHUB_ENV
-        - name: Esperar inicio app
-          run: sleep 30
-        - name: Validar disponibilidad
-          run: |
-            STATUS=$(curl -o /dev/null -s -w "%{http_code}" $APP_URL)
-            echo "HTTP STATUS: $STATUS"
-            if [ "$STATUS" != "200" ]; then
-              echo "Aplicacion no disponible"
-              exit 1
-            fi
+    name: Monitoreo Aplicacion
+    needs: deploy-app
+    runs-on: ubuntu-latest
+    env:
+      ENVIRONMENT: ${{ inputs.environment }}
+
+    outputs:
+      previous_version: ${{ steps.previous.outputs.previous_version }}
+
+    steps:
+      - name: Obtener version estable
+        id: previous
+        run: |
+          if [ "$ENVIRONMENT" = "dev" ]; then
+            VERSION="${{ vars.DEV_VERSION }}"
+          elif [ "$ENVIRONMENT" = "qa" ]; then
+            VERSION="${{ vars.QA_VERSION }}"
+          else
+            VERSION="${{ vars.PROD_VERSION }}"
+          fi
+          echo "Version estable: $VERSION"
+          echo "previous_version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Definir URL
+        run: |
+          echo "APP_URL=https://paginapruebadevsecops-${ENVIRONMENT}.azurewebsites.net" >> $GITHUB_ENV
+      - name: Esperar inicio app
+        run: sleep 30
+      - name: Validar disponibilidad
+        run: |
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" $APP_URL)
+          echo "HTTP STATUS: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            exit 1
+          fi
+
+  rollback:
+    name: Rollback Automatico
+    needs: monitoring
+    if: ${{ needs.monitoring.result == 'failure'
+            && needs.monitoring.outputs.previous_version != '' }}
+    uses: ./.github/workflows/rollback.yml
+    with:
+      environment: ${{ inputs.environment }}
+      image_tag: ${{ needs.monitoring.outputs.previous_version }}
+    secrets: inherit
