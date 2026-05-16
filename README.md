@@ -1,5 +1,5 @@
 # pruebasdevsecops
-[![Ask DeepWiki](https://devin.ai/assets/askdeepwiki.png)](https://deepwiki.com/cerc151git/pruebasdevsecops)
+[![Preguntas](https://devin.ai/assets/askdeepwiki.png)]((https://github.com/cerc151git/pruebasdevsecops))
 
 This repository contains a full DevSecOps pipeline for deploying a containerized static web application to Azure. The project uses Terraform for Infrastructure as Code (IaC), Docker to containerize the application, and GitHub Actions for CI/CD automation, including security scanning, deployment, monitoring, and automated rollbacks.
 
