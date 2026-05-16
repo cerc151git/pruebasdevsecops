@@ -13,7 +13,7 @@ on:
 jobs:
   deploy-infra:
     name: Desplegar Infraestructura
-    uses: ./.github/workflows/terraform.yml
+    uses: ./.github/workflows/infraiac.yml
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
@@ -21,7 +21,7 @@ jobs:
   deploy-app:
     name: Desplegar Aplicacion
     needs: deploy-infra
-    uses: ./.github/workflows/app.yml
+    uses: ./.github/workflows/deploywebdocker.yml
     with:
       environment: ${{ inputs.environment }}
     secrets: inherit
