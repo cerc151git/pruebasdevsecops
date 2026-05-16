@@ -47,7 +47,7 @@ jobs:
             echo "Primer despliegue"
           fi
       - name: checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
       - name: Login DockerHub
         uses: docker/login-action@v3
         with:
