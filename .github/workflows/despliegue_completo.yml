@@ -34,6 +34,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.environment }}
 
     outputs:
+      monitoring_status: ${{ steps.final_status.outputs.result }}
       previous_version: ${{ steps.previous.outputs.previous_version }}
 
     steps:
@@ -55,17 +56,29 @@ jobs:
       - name: Esperar inicio app
         run: sleep 30
       - name: Validar disponibilidad
+        id: healthcheck
+        continue-on-error: true
         run: |
           STATUS=$(curl -o /dev/null -s -w "%{http_code}" $APP_URL)
           echo "HTTP STATUS: $STATUS"
           if [ "$STATUS" != "200" ]; then
             exit 1
           fi
-
+      - name: Resultado monitoreo
+        id: final_status
+        run: |
+          if [ "${{ steps.healthcheck.outcome }}" = "success" ]; then
+            echo "result=success" >> $GITHUB_OUTPUT
+          else
+            echo "result=failure" >> $GITHUB_OUTPUT
+          fi
+          echo "Resultado monitoreo:"
+          echo "${{ steps.healthcheck.outcome }}"
+  
   rollback:
     name: Rollback Automatico
     needs: monitoring
-    if: ${{ needs.monitoring.result == 'failure'
+    if: ${{ needs.monitoring.outputs.monitoring_status == 'failure'
             && needs.monitoring.outputs.previous_version != '' }}
     uses: ./.github/workflows/rollback.yml
     with:
